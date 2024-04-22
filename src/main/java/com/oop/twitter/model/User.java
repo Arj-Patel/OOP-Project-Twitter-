@@ -1,11 +1,11 @@
 package com.oop.twitter.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+
+import java.util.List;
+
+import java.util.List;
 
 @Entity
 @Table(name = "Users")
@@ -23,6 +23,14 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
+    @OneToMany(mappedBy = "user")
+    @JsonManagedReference
+    private List<Post> posts;
+
+    public List<Post> getPosts() {
+        return posts;
+    }
 
     // Getters and Setters
     public Long getUserID() {

@@ -1,16 +1,21 @@
 package com.oop.twitter.service;
 
+import com.oop.twitter.model.Post;
 import com.oop.twitter.model.User;
+import com.oop.twitter.repository.PostRepository;
 import com.oop.twitter.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PostRepository postRepository) {
         this.userRepository = userRepository;
+        this.postRepository = postRepository;
     }
 
     public User findByEmail(String email) {
@@ -25,4 +30,8 @@ public class UserService {
         return userRepository.findById(userID).orElseThrow(() -> new RuntimeException("User does not exist"));
     }
 
+    // Add the getAllPosts method here
+    public List<Post> getAllPosts() {
+        return postRepository.findAllByOrderByDateDesc();
+    }
 }
