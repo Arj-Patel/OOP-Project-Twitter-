@@ -1,8 +1,14 @@
 package com.oop.twitter.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "commentID")
 public class Comments {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -12,6 +18,7 @@ public class Comments {
 
     @ManyToOne
     @JoinColumn(name = "postID") // changed from "postID" to "post_id"
+    @JsonBackReference
     private Post post;
 
     @ManyToOne

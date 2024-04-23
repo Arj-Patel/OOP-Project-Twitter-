@@ -8,6 +8,7 @@ import com.oop.twitter.repository.PostRepository;
 import com.oop.twitter.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
 
 import java.util.Optional;
 
@@ -26,10 +27,19 @@ public class CommentsController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createComment(@RequestBody Comments comment) {
-        Optional<Post> postOptional = postRepository.findById(comment.getPost().getPostID());
-        Optional<User> userOptional = userRepository.findById(comment.getUser().getUserID());
+    public ResponseEntity<String> createComment(@RequestBody Map<String, Object> payload) {
+        Long postId = Long.valueOf(payload.get("post").toString());
+        Long userId = Long.valueOf(payload.get("user").toString());
+        String commentBody = (String) payload.get("commentBody");
+
+        Optional<Post> postOptional = postRepository.findById(postId);
+        Optional<User> userOptional = userRepository.findById(userId);
+
         if (postOptional.isPresent() && userOptional.isPresent()) {
+            Comments comment = new Comments();
+            comment.setCommentBody(commentBody);
+            comment.setPost(postOptional.get());
+            comment.setUser(userOptional.get());
             commentRepository.save(comment);
             return ResponseEntity.ok("Comment created successfully");
         } else {
@@ -61,10 +71,11 @@ public class CommentsController {
     }
 
     @DeleteMapping
-    public ResponseEntity<String> deleteComment(@PathVariable Long commentID) {
-        Optional<Comments> commentOptional = commentRepository.findById(commentID);
+    public ResponseEntity<String> deleteComment(@RequestBody Map<String, Integer> payload) {
+        Integer commentID = payload.get("commentID");
+        Optional<Comments> commentOptional = commentRepository.findById(Long.valueOf(commentID));
         if (commentOptional.isPresent()) {
-            commentRepository.deleteById(commentID);
+            commentRepository.deleteById(Long.valueOf(commentID));
             return ResponseEntity.ok("Comment deleted");
         } else {
             return ResponseEntity.badRequest().body("Comment does not exist");

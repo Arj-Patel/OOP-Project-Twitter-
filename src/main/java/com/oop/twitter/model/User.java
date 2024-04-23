@@ -1,14 +1,16 @@
 package com.oop.twitter.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-
-import java.util.List;
-
 import java.util.List;
 
 @Entity
 @Table(name = "Users")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "userID")
 public class User {
 
     @Id

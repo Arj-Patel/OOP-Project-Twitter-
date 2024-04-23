@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import com.oop.twitter.model.Post;
 import java.util.List;
-import java.util.Optional;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.stream.Collectors;

@@ -1,13 +1,16 @@
 package com.oop.twitter.controller;
 
+import com.oop.twitter.dto.CommentsDTO;
+import com.oop.twitter.dto.UserDTO;
 import com.oop.twitter.model.Post;
 import com.oop.twitter.model.User;
 import com.oop.twitter.repository.PostRepository;
 import com.oop.twitter.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.Optional;
-import java.util.Date;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/post")
@@ -37,7 +40,28 @@ public class PostController {
     public ResponseEntity<Object> getPost(@RequestParam Long postID) {
         Optional<Post> postOptional = postRepository.findById(postID);
         if (postOptional.isPresent()) {
-            return ResponseEntity.ok(postOptional.get());
+            Post post = postOptional.get();
+            List<Map<String, Object>> commentDTOs = post.getComments().stream().map(comment -> {
+                Map<String, Object> commentMap = new HashMap<>();
+                commentMap.put("commentID", comment.getCommentID());
+                commentMap.put("commentBody", comment.getCommentBody());
+
+                Map<String, Object> userMap = new HashMap<>();
+                userMap.put("userID", comment.getUser().getUserID());
+                userMap.put("name", comment.getUser().getName());
+
+                commentMap.put("commentCreator", userMap);
+
+                return commentMap;
+            }).collect(Collectors.toList());
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("postID", post.getPostID());
+            response.put("postBody", post.getPostBody());
+            response.put("date", post.getDate());
+            response.put("comments", commentDTOs);
+
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.badRequest().body("Post does not exist");
         }
