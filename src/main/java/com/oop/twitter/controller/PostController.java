@@ -83,7 +83,8 @@ public class PostController {
 
     // Delete a post
     @DeleteMapping
-    public ResponseEntity<String> deletePost(@RequestBody Long postID) {
+    public ResponseEntity<String> deletePost(@RequestBody Map<String, Integer> payload) {
+        Long postID = Long.valueOf(payload.get("postID"));
         Optional<Post> postOptional = postRepository.findById(postID);
         if (postOptional.isPresent()) {
             postRepository.deleteById(postID);

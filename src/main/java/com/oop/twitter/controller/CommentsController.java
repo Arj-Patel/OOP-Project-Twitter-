@@ -9,6 +9,7 @@ import com.oop.twitter.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
+import java.util.HashMap;
 
 import java.util.Optional;
 
@@ -51,7 +52,18 @@ public class CommentsController {
     public ResponseEntity<Object> getComment(@RequestParam Long commentID) {
         Optional<Comments> commentOptional = commentRepository.findById(commentID);
         if (commentOptional.isPresent()) {
-            return ResponseEntity.ok(commentOptional.get());
+            Comments comment = commentOptional.get();
+            Map<String, Object> commentMap = new HashMap<>();
+            commentMap.put("commentID", comment.getCommentID());
+            commentMap.put("commentBody", comment.getCommentBody());
+
+            Map<String, Object> userMap = new HashMap<>();
+            userMap.put("userID", comment.getUser().getUserID());
+            userMap.put("name", comment.getUser().getName());
+
+            commentMap.put("commentCreator", userMap);
+
+            return ResponseEntity.ok(commentMap);
         } else {
             return ResponseEntity.badRequest().body("Comment does not exist");
         }

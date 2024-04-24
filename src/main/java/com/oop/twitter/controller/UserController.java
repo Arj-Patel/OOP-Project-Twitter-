@@ -52,22 +52,7 @@ public class UserController {
             response.put("userID", user.getUserID());
             response.put("email", user.getEmail());
             List<Map<String, Object>> posts = user.getPosts().stream().map(post -> {
-                Map<String, Object> postMap = new HashMap<>();
-                postMap.put("postID", post.getPostID());
-                postMap.put("postBody", post.getPostBody());
-                postMap.put("date", post.getDate());
-                List<Map<String, Object>> comments = post.getComments().stream().map(comment -> {
-                    Map<String, Object> commentMap = new HashMap<>();
-                    commentMap.put("commentID", comment.getCommentID());
-                    commentMap.put("commentBody", comment.getCommentBody());
-                    Map<String, Object> commentCreator = new HashMap<>();
-                    commentCreator.put("userID", comment.getUser().getUserID());
-                    commentCreator.put("name", comment.getUser().getName());
-                    commentMap.put("commentCreator", commentCreator);
-                    return commentMap;
-                }).collect(Collectors.toList());
-                postMap.put("comments", comments);
-                return postMap;
+                return getStringObjectMap(post);
             }).collect(Collectors.toList());
             response.put("posts", posts);
             return ResponseEntity.ok(response);
@@ -76,9 +61,34 @@ public class UserController {
         }
     }
 
-    @GetMapping("/")
-    public ResponseEntity<?> getFeed() {
-        List<Post> posts = userService.getAllPosts();
-        return ResponseEntity.ok(posts);
+    private Map<String, Object> getStringObjectMap(Post post) {
+        Map<String, Object> postMap = new HashMap<>();
+        postMap.put("postID", post.getPostID());
+        postMap.put("postBody", post.getPostBody());
+        postMap.put("date", post.getDate());
+
+        List<Map<String, Object>> commentMaps = post.getComments().stream().map(comment -> {
+            Map<String, Object> commentMap = new HashMap<>();
+            commentMap.put("commentID", comment.getCommentID());
+            commentMap.put("commentBody", comment.getCommentBody());
+
+            Map<String, Object> userMap = new HashMap<>();
+            userMap.put("userID", comment.getUser().getUserID());
+            userMap.put("name", comment.getUser().getName());
+
+            commentMap.put("commentCreator", userMap);
+
+            return commentMap;
+        }).collect(Collectors.toList());
+
+        postMap.put("comments", commentMaps);
+
+        return postMap;
     }
+
+//    @GetMapping("/")
+//    public ResponseEntity<?> getFeed() {
+//        List<Post> posts = userService.getAllPosts();
+//        return ResponseEntity.ok(posts);
+//    }
 }
