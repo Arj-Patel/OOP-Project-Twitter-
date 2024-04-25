@@ -1,7 +1,5 @@
 package com.oop.twitter.controller;
 
-import com.oop.twitter.dto.CommentsDTO;
-import com.oop.twitter.dto.UserDTO;
 import com.oop.twitter.model.Post;
 import com.oop.twitter.model.User;
 import com.oop.twitter.repository.PostRepository;
