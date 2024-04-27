@@ -29,22 +29,24 @@ public class CommentsController {
 
     @PostMapping
     public ResponseEntity<String> createComment(@RequestBody Map<String, Object> payload) {
-        Long postId = Long.valueOf(payload.get("post").toString());
-        Long userId = Long.valueOf(payload.get("user").toString());
+        Integer postId = (Integer) payload.get("postID");
+        Integer userId = (Integer) payload.get("userID");
         String commentBody = (String) payload.get("commentBody");
 
-        Optional<Post> postOptional = postRepository.findById(postId);
-        Optional<User> userOptional = userRepository.findById(userId);
+        Optional<Post> postOptional = postRepository.findById(Long.valueOf(postId));
+        Optional<User> userOptional = userRepository.findById(Long.valueOf(userId));
 
-        if (postOptional.isPresent() && userOptional.isPresent()) {
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.badRequest().body("User does not exist");
+        } else if (!postOptional.isPresent()) {
+            return ResponseEntity.badRequest().body("Post does not exist");
+        } else {
             Comments comment = new Comments();
             comment.setCommentBody(commentBody);
             comment.setPost(postOptional.get());
             comment.setUser(userOptional.get());
             commentRepository.save(comment);
             return ResponseEntity.ok("Comment created successfully");
-        } else {
-            return ResponseEntity.badRequest().body("Post or User does not exist");
         }
     }
 
@@ -76,7 +78,7 @@ public class CommentsController {
             Comments existingComment = commentOptional.get();
             existingComment.setCommentBody(comment.getCommentBody());
             commentRepository.save(existingComment);
-            return ResponseEntity.ok("Comment updated successfully");
+            return ResponseEntity.ok("Comment edited successfully");
         } else {
             return ResponseEntity.badRequest().body("Comment does not exist");
         }

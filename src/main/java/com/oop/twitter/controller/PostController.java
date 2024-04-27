@@ -23,9 +23,14 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createPost(@RequestBody Post post) {
-        Optional<User> userOptional = userRepository.findById(post.getUser().getUserID());
+    public ResponseEntity<String> createPost(@RequestBody Map<String, Object> payload) {
+        Long userId = Long.valueOf(payload.get("userID").toString());
+        String postBody = payload.get("postBody").toString();
+        Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
+            Post post = new Post();
+            post.setUser(userOptional.get());
+            post.setPostBody(postBody);
             post.setDate(new Date()); // set the date here
             postRepository.save(post);
             return ResponseEntity.ok("Post created successfully");
@@ -73,7 +78,7 @@ public class PostController {
             Post existingPost = postOptional.get();
             existingPost.setPostBody(post.getPostBody());
             postRepository.save(existingPost);
-            return ResponseEntity.ok("Post updated successfully");
+            return ResponseEntity.ok("Post edited successfully");
         } else {
             return ResponseEntity.badRequest().body("Post does not exist");
         }

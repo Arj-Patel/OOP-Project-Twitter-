@@ -51,10 +51,6 @@ public class UserController {
             response.put("name", user.getName());
             response.put("userID", user.getUserID());
             response.put("email", user.getEmail());
-            List<Map<String, Object>> posts = user.getPosts().stream().map(post -> {
-                return getStringObjectMap(post);
-            }).collect(Collectors.toList());
-            response.put("posts", posts);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User does not exist");
@@ -86,9 +82,18 @@ public class UserController {
         return postMap;
     }
 
-//    @GetMapping("/")
-//    public ResponseEntity<?> getFeed() {
-//        List<Post> posts = userService.getAllPosts();
-//        return ResponseEntity.ok(posts);
-//    }
+    @GetMapping("/users")
+    public ResponseEntity<List<Map<String, Object>>> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        List<Map<String, Object>> userMaps = users.stream().map(user -> {
+            Map<String, Object> userMap = new HashMap<>();
+            userMap.put("name", user.getName());
+            userMap.put("userID", user.getUserID());
+            userMap.put("email", user.getEmail());
+            return userMap;
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.ok(userMaps);
+    }
+
 }
