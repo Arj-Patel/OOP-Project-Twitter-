@@ -30,9 +30,9 @@ public class Comments {
         return this.commentID;
     }
 
-    public void setCommentID(Long commentID) {
-        this.commentID = commentID;
-    }
+//    public void setCommentID(Long commentID) {
+//        this.commentID = commentID;
+//    }
 
     public String getCommentBody() {
         return commentBody;
@@ -42,9 +42,9 @@ public class Comments {
         this.commentBody = commentBody;
     }
 
-    public Post getPost() {
-        return post;
-    }
+//    public Post getPost() {
+//        return post;
+//    }
 
     public void setPost(Post post) {
         this.post = post;

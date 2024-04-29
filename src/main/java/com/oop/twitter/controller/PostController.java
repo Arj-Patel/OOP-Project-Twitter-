@@ -6,7 +6,7 @@ import com.oop.twitter.repository.PostRepository;
 import com.oop.twitter.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.View;
+//import org.springframework.web.servlet.View;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,12 +17,12 @@ public class PostController {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final View error;
+//    private final View error;
 
-    public PostController(PostRepository postRepository, UserRepository userRepository, View error) {
+    public PostController(PostRepository postRepository, UserRepository userRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
-        this.error = error;
+//        this.error = error;
     }
 
     @PostMapping

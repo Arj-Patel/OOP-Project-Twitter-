@@ -5,8 +5,8 @@ import com.oop.twitter.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
-import com.oop.twitter.model.Post;
-import org.springframework.web.servlet.View;
+//import com.oop.twitter.model.Post;
+//import org.springframework.web.servlet.View;
 
 import java.util.List;
 import java.util.Map;
@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private final UserService userService;
-    private final View error;
+//    private final View error;
 
-    public UserController(UserService userService, View error) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.error = error;
+//        this.error = error;
     }
 
     @PostMapping("/login")
@@ -69,30 +69,30 @@ public class UserController {
         }
     }
 
-    private Map<String, Object> getStringObjectMap(Post post) {
-        Map<String, Object> postMap = new HashMap<>();
-        postMap.put("postID", post.getPostID());
-        postMap.put("postBody", post.getPostBody());
-        postMap.put("date", post.getDate());
-
-        List<Map<String, Object>> commentMaps = post.getComments().stream().map(comment -> {
-            Map<String, Object> commentMap = new HashMap<>();
-            commentMap.put("commentID", comment.getCommentID());
-            commentMap.put("commentBody", comment.getCommentBody());
-
-            Map<String, Object> userMap = new HashMap<>();
-            userMap.put("userID", comment.getUser().getUserID());
-            userMap.put("name", comment.getUser().getName());
-
-            commentMap.put("commentCreator", userMap);
-
-            return commentMap;
-        }).collect(Collectors.toList());
-
-        postMap.put("comments", commentMaps);
-
-        return postMap;
-    }
+//    private Map<String, Object> getStringObjectMap(Post post) {
+//        Map<String, Object> postMap = new HashMap<>();
+//        postMap.put("postID", post.getPostID());
+//        postMap.put("postBody", post.getPostBody());
+//        postMap.put("date", post.getDate());
+//
+//        List<Map<String, Object>> commentMaps = post.getComments().stream().map(comment -> {
+//            Map<String, Object> commentMap = new HashMap<>();
+//            commentMap.put("commentID", comment.getCommentID());
+//            commentMap.put("commentBody", comment.getCommentBody());
+//
+//            Map<String, Object> userMap = new HashMap<>();
+//            userMap.put("userID", comment.getUser().getUserID());
+//            userMap.put("name", comment.getUser().getName());
+//
+//            commentMap.put("commentCreator", userMap);
+//
+//            return commentMap;
+//        }).collect(Collectors.toList());
+//
+//        postMap.put("comments", commentMaps);
+//
+//        return postMap;
+//    }
 
     @GetMapping("/users")
     public ResponseEntity<List<Map<String, Object>>> getAllUsers() {

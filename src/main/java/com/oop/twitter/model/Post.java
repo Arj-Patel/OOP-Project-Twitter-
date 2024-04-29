@@ -37,9 +37,9 @@ public class Post {
         return postID;
     }
 
-    public void setPostID(Long postID) {
-        this.postID = postID;
-    }
+//    public void setPostID(Long postID) {
+//        this.postID = postID;
+//    }
 
     public String getPostBody() {
         return this.postBody;
@@ -61,13 +61,13 @@ public class Post {
         return comments;
     }
 
-    public void setComments(List<Comments> comments) {
-        this.comments = comments;
-    }
+//    public void setComments(List<Comments> comments) {
+//        this.comments = comments;
+//    }
 
-    public User getUser() {
-        return user;
-    }
+//    public User getUser() {
+//        return user;
+//    }
 
     public void setUser(User user) {
         this.user = user;
