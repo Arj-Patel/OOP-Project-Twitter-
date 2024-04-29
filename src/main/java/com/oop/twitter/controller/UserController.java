@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import com.oop.twitter.model.Post;
+import org.springframework.web.servlet.View;
+
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -16,28 +18,36 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private final UserService userService;
+    private final View error;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, View error) {
         this.userService = userService;
+        this.error = error;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user) {
+    public ResponseEntity<?> login(@RequestBody User user) {
         User existingUser = userService.findByEmail(user.getEmail());
         if (existingUser == null) {
-            return ResponseEntity.badRequest().body("User does not exist");
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("Error", "User does not exist");
+            return ResponseEntity.badRequest().body(errorResponse);
         }
         if (!existingUser.getPassword().equals(user.getPassword())) {
-            return ResponseEntity.badRequest().body("Username/Password Incorrect");
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("Error", "Username/Password Incorrect");
+            return ResponseEntity.badRequest().body(errorResponse);
         }
         return ResponseEntity.ok("Login Successful");
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody User user) {
+    public ResponseEntity<?> signup(@RequestBody User user) {
         User existingUser = userService.findByEmail(user.getEmail());
         if (existingUser != null) {
-            return new ResponseEntity<>("Forbidden, Account already exists", HttpStatus.FORBIDDEN);
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("Error", "Forbidden, Account already exists");
+            return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
         }
         userService.save(user);
         return new ResponseEntity<>("Account Creation Successful", HttpStatus.CREATED);
@@ -53,7 +63,9 @@ public class UserController {
             response.put("email", user.getEmail());
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User does not exist");
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("Error", "User does not exist");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
     }
 

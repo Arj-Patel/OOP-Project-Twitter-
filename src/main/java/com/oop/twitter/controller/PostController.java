@@ -6,6 +6,7 @@ import com.oop.twitter.repository.PostRepository;
 import com.oop.twitter.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.View;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -16,14 +17,16 @@ public class PostController {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final View error;
 
-    public PostController(PostRepository postRepository, UserRepository userRepository) {
+    public PostController(PostRepository postRepository, UserRepository userRepository, View error) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.error = error;
     }
 
     @PostMapping
-    public ResponseEntity<String> createPost(@RequestBody Map<String, Object> payload) {
+    public ResponseEntity<?> createPost(@RequestBody Map<String, Object> payload) {
         Long userId = Long.valueOf(payload.get("userID").toString());
         String postBody = payload.get("postBody").toString();
         Optional<User> userOptional = userRepository.findById(userId);
@@ -35,12 +38,14 @@ public class PostController {
             postRepository.save(post);
             return ResponseEntity.ok("Post created successfully");
         } else {
-            return ResponseEntity.badRequest().body("User does not exist");
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("Error", "User does not exist");
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
 
     @GetMapping
-    public ResponseEntity<Object> getPost(@RequestParam Long postID) {
+    public ResponseEntity<?> getPost(@RequestParam Long postID) {
         Optional<Post> postOptional = postRepository.findById(postID);
         if (postOptional.isPresent()) {
             Post post = postOptional.get();
@@ -66,13 +71,14 @@ public class PostController {
 
             return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.badRequest().body("Post does not exist");
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("Error", "Post does not exist");
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
 
-    // Edit an existing post
     @PatchMapping
-    public ResponseEntity<String> editPost(@RequestBody Post post) {
+    public ResponseEntity<?> editPost(@RequestBody Post post) {
         Optional<Post> postOptional = postRepository.findById(post.getPostID());
         if (postOptional.isPresent()) {
             Post existingPost = postOptional.get();
@@ -80,20 +86,22 @@ public class PostController {
             postRepository.save(existingPost);
             return ResponseEntity.ok("Post edited successfully");
         } else {
-            return ResponseEntity.badRequest().body("Post does not exist");
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("Error", "Post does not exist");
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
 
-    // Delete a post
     @DeleteMapping
-    public ResponseEntity<String> deletePost(@RequestBody Map<String, Integer> payload) {
-        Long postID = Long.valueOf(payload.get("postID"));
+    public ResponseEntity<?> deletePost(@RequestParam Long postID) {
         Optional<Post> postOptional = postRepository.findById(postID);
         if (postOptional.isPresent()) {
             postRepository.deleteById(postID);
             return ResponseEntity.ok("Post deleted");
         } else {
-            return ResponseEntity.badRequest().body("Post does not exist");
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("Error", "Post does not exist");
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
 

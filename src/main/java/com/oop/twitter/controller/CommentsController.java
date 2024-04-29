@@ -28,7 +28,7 @@ public class CommentsController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createComment(@RequestBody Map<String, Object> payload) {
+    public ResponseEntity<?> createComment(@RequestBody Map<String, Object> payload) {
         Integer postId = (Integer) payload.get("postID");
         Integer userId = (Integer) payload.get("userID");
         String commentBody = (String) payload.get("commentBody");
@@ -36,10 +36,13 @@ public class CommentsController {
         Optional<Post> postOptional = postRepository.findById(Long.valueOf(postId));
         Optional<User> userOptional = userRepository.findById(Long.valueOf(userId));
 
+        Map<String, String> errorResponse = new HashMap<>();
         if (!userOptional.isPresent()) {
-            return ResponseEntity.badRequest().body("User does not exist");
+            errorResponse.put("Error", "User does not exist");
+            return ResponseEntity.badRequest().body(errorResponse);
         } else if (!postOptional.isPresent()) {
-            return ResponseEntity.badRequest().body("Post does not exist");
+            errorResponse.put("Error", "Post does not exist");
+            return ResponseEntity.badRequest().body(errorResponse);
         } else {
             Comments comment = new Comments();
             comment.setCommentBody(commentBody);
@@ -51,7 +54,7 @@ public class CommentsController {
     }
 
     @GetMapping
-    public ResponseEntity<Object> getComment(@RequestParam Long commentID) {
+    public ResponseEntity<?> getComment(@RequestParam Long commentID) {
         Optional<Comments> commentOptional = commentRepository.findById(commentID);
         if (commentOptional.isPresent()) {
             Comments comment = commentOptional.get();
@@ -67,12 +70,14 @@ public class CommentsController {
 
             return ResponseEntity.ok(commentMap);
         } else {
-            return ResponseEntity.badRequest().body("Comment does not exist");
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("Error", "Comment does not exist");
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
 
     @PatchMapping
-    public ResponseEntity<String> editComment(@RequestBody Comments comment) {
+    public ResponseEntity<?> editComment(@RequestBody Comments comment) {
         Optional<Comments> commentOptional = commentRepository.findById(comment.getCommentID());
         if (commentOptional.isPresent()) {
             Comments existingComment = commentOptional.get();
@@ -80,19 +85,22 @@ public class CommentsController {
             commentRepository.save(existingComment);
             return ResponseEntity.ok("Comment edited successfully");
         } else {
-            return ResponseEntity.badRequest().body("Comment does not exist");
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("Error", "Comment does not exist");
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
 
     @DeleteMapping
-    public ResponseEntity<String> deleteComment(@RequestBody Map<String, Integer> payload) {
-        Integer commentID = payload.get("commentID");
-        Optional<Comments> commentOptional = commentRepository.findById(Long.valueOf(commentID));
+    public ResponseEntity<?> deleteComment(@RequestParam Long commentID) {
+        Optional<Comments> commentOptional = commentRepository.findById(commentID);
         if (commentOptional.isPresent()) {
-            commentRepository.deleteById(Long.valueOf(commentID));
+            commentRepository.deleteById(commentID);
             return ResponseEntity.ok("Comment deleted");
         } else {
-            return ResponseEntity.badRequest().body("Comment does not exist");
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("Error", "Comment does not exist");
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
 }
