@@ -17,22 +17,17 @@ public class Comments {
     private String commentBody;
 
     @ManyToOne
-    @JoinColumn(name = "postID") // changed from "postID" to "post_id"
+    @JoinColumn(name = "postID")
     @JsonBackReference
     private Post post;
 
     @ManyToOne
-    @JoinColumn(name = "userID") // assuming the column in the user table is "user_id"
+    @JoinColumn(name = "userID")
     private User user;
 
-    // getters and setters
     public Long getCommentID() {
         return this.commentID;
     }
-
-//    public void setCommentID(Long commentID) {
-//        this.commentID = commentID;
-//    }
 
     public String getCommentBody() {
         return commentBody;
@@ -41,10 +36,6 @@ public class Comments {
     public void setCommentBody(String commentBody) {
         this.commentBody = commentBody;
     }
-
-//    public Post getPost() {
-//        return post;
-//    }
 
     public void setPost(Post post) {
         this.post = post;

@@ -4,7 +4,6 @@ import com.oop.twitter.model.Post;
 import com.oop.twitter.repository.PostRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.*;
 import java.util.stream.Collectors;
 

@@ -32,14 +32,9 @@ public class Post {
     @JsonBackReference
     private User user;
 
-    // getters and setters
     public Long getPostID() {
         return postID;
     }
-
-//    public void setPostID(Long postID) {
-//        this.postID = postID;
-//    }
 
     public String getPostBody() {
         return this.postBody;
@@ -60,14 +55,6 @@ public class Post {
     public List<Comments> getComments() {
         return comments;
     }
-
-//    public void setComments(List<Comments> comments) {
-//        this.comments = comments;
-//    }
-
-//    public User getUser() {
-//        return user;
-//    }
 
     public void setUser(User user) {
         this.user = user;

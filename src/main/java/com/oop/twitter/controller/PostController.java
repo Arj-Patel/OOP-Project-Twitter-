@@ -6,8 +6,6 @@ import com.oop.twitter.repository.PostRepository;
 import com.oop.twitter.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-//import org.springframework.web.servlet.View;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -17,12 +15,10 @@ public class PostController {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-//    private final View error;
 
     public PostController(PostRepository postRepository, UserRepository userRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
-//        this.error = error;
     }
 
     @PostMapping
@@ -34,7 +30,7 @@ public class PostController {
             Post post = new Post();
             post.setUser(userOptional.get());
             post.setPostBody(postBody);
-            post.setDate(new Date()); // set the date here
+            post.setDate(new Date());
             postRepository.save(post);
             return ResponseEntity.ok("Post created successfully");
         } else {
